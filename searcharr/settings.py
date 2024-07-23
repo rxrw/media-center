@@ -5,21 +5,23 @@ By Todd Roberts
 https://github.com/toddrob99/searcharr
 """
 
+import os
+
 # Searcharr Bot
-searcharr_password = "wai31415926"  # Used to authenticate as a regular user to add series/movies
-searcharr_admin_password = "wai3.1415926"  # Used to authenticate as admin to manage users
+searcharr_password = os.environ["SEARCHARR_PASSWORD"]  # Used to authenticate as a regular user to add series/movies
+searcharr_admin_password = os.environ["SEARCHARR_ADMIN_PASSWORD"]  # Used to authenticate as admin to manage users
 searcharr_language = "en-us"  # yml file in the lang folder
 searcharr_start_command_aliases = ["start"]  # Override /start command
 searcharr_help_command_aliases = ["help"]  # Override /help command
 searcharr_users_command_aliases = ["users"]  # Override /users command
 
 # Telegram
-tgram_token = "6165107628:AAGGdTgsDY_mPOFn71iS03sMyCHXSGGMemM"  # Telegram Bot Token
+tgram_token = os.environ["TELEGRAM_BOT_TOKEN"]  # Telegram Bot Token
 
 # Sonarr
 sonarr_enabled = True
 sonarr_url = "http://sonarr:8989"  # http://192.168.0.100:8989
-sonarr_api_key = "70145d5007334979857603875a944e78"
+sonarr_api_key = os.environ["SONARR_API_KEY"]
 sonarr_quality_profile_id = ["Any"]  # can be name or id value - include multiple to allow the user to choose
 sonarr_add_monitored = True
 sonarr_search_on_add = True
@@ -34,7 +36,7 @@ sonarr_season_monitor_prompt = False  # False - always monitor all seasons; True
 # Radarr
 radarr_enabled = True
 radarr_url = "http://radarr:7878"  # http://192.168.0.100:7878
-radarr_api_key = "0beb3a37212844478672db9d29261ee3"
+radarr_api_key = os.environ["RADARR_API_KEY"]
 radarr_quality_profile_id = ["Any"]  # can be name or id value - include multiple to allow the user to choose
 radarr_add_monitored = True
 radarr_search_on_add = True
@@ -49,7 +51,7 @@ radarr_movie_paths = []  # e.g. ["/movies", "/other-movies"] - can be full path 
 # Readarr
 readarr_enabled = False
 readarr_url = "http://readarr:8787"  # http://192.168.0.100:8787
-readarr_api_key = "dcaa1d3755ee40a6958d66916052e3ef"
+readarr_api_key = os.environ["READARR_API_KEY"]
 readarr_quality_profile_id = ["eBook", "Spoken"]  # can be name or id value - include multiple to allow the user to choose
 readarr_metadata_profile_id = ["Standard"]  # can be name or id value - include multiple to allow the user to choose
 readarr_add_monitored = True

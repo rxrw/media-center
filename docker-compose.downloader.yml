@@ -1,0 +1,58 @@
+name: downloader
+
+services:
+  qbittorrent:
+    image: ghcr.io/linuxserver/qbittorrent
+    container_name: qbittorrent
+    environment:
+      - PGID=${PGID}
+      - PUID=${PUID}
+      - TZ=${TIMEZONE}
+      - UMASK=${UMASK_SET}
+      - WEBUI_PORT=8042
+    ports:
+      - "8042:8042"
+      - "33288:33288/tcp"
+      - "33288:33288/udp"
+    volumes:
+      - ./qbittorrent:/config
+      - ${MEDIA_PATH}:/media
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.qbittorrent.rule=Host(`qb.${DOMAIN}`)
+      - traefik.http.routers.qbittorrent.tls=true
+      - traefik.http.services.qbittorrent.loadbalancer.server.port=8042
+    restart: always
+    networks:
+      - traefik
+
+  transmission:
+    image: ghcr.io/linuxserver/transmission
+    container_name: transmission
+    environment:
+      - PGID=${PGID}
+      - PUID=${PUID}
+      - TZ=${TIMEZONE}
+      - UMASK=${UMASK_SET}
+      - WEBUI_PORT=9091
+      - USER=${TRANSMISSION_USER}
+      - PASS=${TRANSMISSION_PASS}
+    ports:
+      - "9091:9091"
+      - "31415:31415/tcp"
+      - "31415:31415/udp"
+    volumes:
+      - ./transmission:/config
+      - ${MEDIA_PATH}:/media
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=traefik
+      - traefik.http.routers.transmission.rule=Host(`tr.${DOMAIN}`)
+      - traefik.http.routers.transmission.tls=true
+      - traefik.http.services.transmission.loadbalancer.server.port=9091
+    networks:
+      - traefik
+
+networks:
+  traefik:
+    external: true

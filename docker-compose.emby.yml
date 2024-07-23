@@ -1,0 +1,52 @@
+name: emby
+
+services:
+  emby:
+    image: emby/embyserver
+    container_name: emby
+    restart: unless-stopped
+    privileged: true
+    devices:
+      - /dev/dri:/dev/dri
+    ports:
+      - 8096:8096
+    volumes:
+      - ./emby:/config
+      - ${MEDIA_PATH}:/media
+    environment:
+      - UID=${PUID}
+      - GID=${PGID}
+      - GIDLIST=${GIDLIST}
+      - UMASK=${UMASK_SET}
+      - TZ=${TIMEZONE}
+    networks:
+      - traefik
+
+  overseerr:
+    image: fallenbagel/jellyseerr
+    container_name: overseerr
+    restart: unless-stopped
+    ports:
+      - "5055:5055"
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TIMEZONE}
+      - UMASK=${UMASK_SET}
+      - JELLYFIN_TYPE=emby
+    depends_on:
+      - emby
+    networks:
+      - traefik
+    volumes:
+      - ./overseerr:/app/config
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=traefik
+      - traefik.http.routers.overseerr.rule=Host(`overseerr.${DOMAIN}`)
+      - traefik.http.routers.overseerr.tls=true
+      - traefik.http.services.overseerr.loadbalancer.server.port=5055
+
+networks:
+  traefik:
+    external: true

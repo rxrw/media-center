@@ -1,58 +1,6 @@
-version: '3.7'
+name: indexer
 
 services:
-  emby:
-    image: emby/embyserver
-    container_name: emby
-    restart: unless-stopped
-    privileged: true
-    devices:
-      - /dev/dri:/dev/dri
-    ports:
-      - "8096:8096"
-    volumes:
-      - ./emby:/config
-      - ${MEDIA_PATH}:/media
-    environment:
-      - UID=${PUID}
-      - GID=${PGID}
-      - GIDLIST=44,100,109,1000,1027
-      - UMASK=${UMASK}
-      - TZ=${TIMEZONE}
-    networks:
-      - traefik
-    labels:
-      - traefik.enable=true
-      - traefik.docker.network=traefik
-      - traefik.http.routers.emby.rule=Host(`emby.${DOMAIN}`)
-      - traefik.http.routers.emby.tls=true
-      - traefik.http.services.emby.loadbalancer.server.port=8096
-
-  jellyfin:
-    image: jellyfin/jellyfin
-    container_name: jellyfin
-    restart: unless-stopped
-    privileged: true
-    ports:
-      - "8096:8096"
-    volumes:
-      - ./jellyfin:/srv/jellyfin
-      - ${MEDIA_PATH}:/media
-    environment:
-      - UID=${PUID}
-      - GID=${PGID}
-      - GIDLIST=44,100,109,1000,1027
-      - UMASK=${UMASK}
-      - TZ=${TIMEZONE}
-    networks:
-      - traefik
-    labels:
-      - traefik.enable=true
-      - traefik.docker.network=traefik
-      - traefik.http.routers.emby.rule=Host(`jellyfin.${DOMAIN}`)
-      - traefik.http.routers.emby.tls=true
-      - traefik.http.services.emby.loadbalancer.server.port=8096
-
   sonarr:
     image: linuxserver/sonarr
     container_name: sonarr
@@ -66,7 +14,7 @@ services:
       - PUID=${PUID}
       - PGID=${PGID}
       - TZ=${TIMEZONE}
-      - UMASK=${UMASK}
+      - UMASK=${UMASK_SET}
     networks:
       - traefik
     depends_on:
@@ -91,7 +39,7 @@ services:
       - PUID=${PUID}
       - PGID=${PGID}
       - TZ=${TIMEZONE}
-      - UMASK=${UMASK}
+      - UMASK=${UMASK_SET}
     networks:
       - traefik
     depends_on:
@@ -114,7 +62,7 @@ services:
       - PUID=${PUID}
       - PGID=${PGID}
       - TZ=${TIMEZONE}
-      - UMASK=${UMASK}
+      - UMASK=${UMASK_SET}
     networks:
       - traefik
     labels:
@@ -137,7 +85,7 @@ services:
       - PUID=${PUID}
       - PGID=${PGID}
       - TZ=${TIMEZONE}
-      - UMASK=${UMASK}
+      - UMASK=${UMASK_SET}
     networks:
       - traefik
     labels:
@@ -167,7 +115,7 @@ services:
       - PUID=${PUID}
       - PGID=${PGID}
       - TZ=${TIMEZONE}
-      - UMASK=${UMASK}
+      - UMASK=${UMASK_SET}
     networks:
       - traefik
     labels:
@@ -176,27 +124,6 @@ services:
       - traefik.http.routers.bazarr.rule=Host(`bazarr.${DOMAIN}`)
       - traefik.http.routers.bazarr.tls=true
       - traefik.http.services.bazarr.loadbalancer.server.port=6767
-
-  whisparr:
-    image: hotio/whisparr
-    container_name: whisparr
-    restart: unless-stopped
-    volumes:
-      - ./whisparr:/config
-      - ${MEDIA_PATH}:/media
-    environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
-      - TZ=${TIMEZONE}
-      - UMASK=${UMASK}
-    networks:
-      - traefik
-    labels:
-      - traefik.enable=true
-      - traefik.docker.network=traefik
-      - traefik.http.routers.whisparr.rule=Host(`whisparr.${DOMAIN}`)
-      - traefik.http.routers.whisparr.tls=true
-      - traefik.http.services.whisparr.loadbalancer.server.port=6969
   
   flexget:
     image: linuxserver/flexget
@@ -209,7 +136,7 @@ services:
       - PUID=${PUID}
       - PGID=${PGID}
       - TZ=${TIMEZONE}
-      - UMASK=${UMASK}
+      - UMASK=${UMASK_SET}
     networks:
       - traefik
     labels:
@@ -230,39 +157,12 @@ services:
       - PUID=${PUID}
       - PGID=${PGID}
       - TZ=${TIMEZONE}
-      - UMASK=${UMASK}
+      - UMASK=${UMASK_SET}
     networks:
       - traefik
     depends_on:
       - sonarr
       - radarr
-
-
-  overseerr:
-    image: fallenbagel/jellyseerr
-    container_name: overseerr
-    restart: unless-stopped
-    ports:
-      - "5055:5055"
-    environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
-      - TZ=${TIMEZONE}
-      - UMASK=${UMASK}
-      - JELLYFIN_TYPE=emby
-    depends_on:
-      - sonarr
-      - radarr
-    networks:
-      - traefik
-    volumes:
-      - ./overseerr:/app/config
-    labels:
-      - traefik.enable=true
-      - traefik.docker.network=traefik
-      - traefik.http.routers.overseerr.rule=Host(`overseerr.${DOMAIN}`)
-      - traefik.http.routers.overseerr.tls=true
-      - traefik.http.services.overseerr.loadbalancer.server.port=5055
 
 networks:
   traefik:

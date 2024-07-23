@@ -1,0 +1,17 @@
+media
+.env
+emby
+sonarr
+radarr
+readarr
+lidarr
+prowlarr
+overseerr
+qbittorrent
+transmission
+searcharr/data
+flexget
+bazarr
+plex-trakt-sync
+tautulli
+.idea
